@@ -9,7 +9,7 @@ import {
 import { Header, NavCategoryAction } from './components/Header';
 import { StorefrontToolbar } from './components/StorefrontToolbar';
 import { CategoryHero } from './components/CategoryHero';
-import { FilterSidebar, FilterState } from './components/FilterSidebar';
+import { FilterSidebar, FilterState, MAX_PRICE, MIN_PRICE } from './components/FilterSidebar';
 import { ProductCard } from './components/ProductCard';
 import { CompareBar } from './components/CompareBar';
 import { CompareModal } from './components/CompareModal';
@@ -24,7 +24,8 @@ type SortOption = 'featured' | 'price-asc' | 'price-desc' | 'rating-desc' | 'cov
 const INITIAL_FILTERS: FilterState = {
   brands: [],
   purifierTypes: [],
-  priceRange: 'all',
+  priceMin: MIN_PRICE,
+  priceMax: MAX_PRICE,
   coverageRange: 'all',
   onSaleOnly: false,
   climateVoucherOnly: false,
@@ -67,10 +68,7 @@ export default function App() {
         return false;
       }
 
-      if (filters.priceRange === 'under-300' && p.price >= 300) return false;
-      if (filters.priceRange === '300-600' && (p.price < 300 || p.price > 600)) return false;
-      if (filters.priceRange === '600-900' && (p.price <= 600 || p.price > 900)) return false;
-      if (filters.priceRange === 'over-900' && p.price <= 900) return false;
+      if (p.price < filters.priceMin || p.price > filters.priceMax) return false;
 
       if (filters.coverageRange === 'up-to-35' && p.coverageSqm > 35) return false;
       if (filters.coverageRange === '36-55' && (p.coverageSqm < 36 || p.coverageSqm > 55)) return false;
@@ -192,11 +190,13 @@ export default function App() {
     }
   };
 
+  const isPriceFiltered = filters.priceMin > MIN_PRICE || filters.priceMax < MAX_PRICE;
+
   const hasActiveFilters =
     searchQuery.trim() !== '' ||
     filters.brands.length > 0 ||
     filters.purifierTypes.length > 0 ||
-    filters.priceRange !== 'all' ||
+    isPriceFiltered ||
     filters.coverageRange !== 'all' ||
     filters.onSaleOnly ||
     filters.climateVoucherOnly ||
@@ -325,6 +325,24 @@ export default function App() {
                       <X className="w-3.5 h-3.5" />
                     </button>
                   ))}
+                  {isPriceFiltered && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFilters({
+                          ...filters,
+                          priceMin: MIN_PRICE,
+                          priceMax: MAX_PRICE,
+                        })
+                      }
+                      className="inline-flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-medium px-2.5 py-1 rounded cursor-pointer tabular-nums"
+                    >
+                      <span>
+                        Price: S${filters.priceMin.toLocaleString()} – S${filters.priceMax.toLocaleString()}
+                      </span>
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
                   {filters.onSaleOnly && (
                     <button
                       type="button"

@@ -6,13 +6,17 @@ import {
   PurifierType,
 } from '../data/airPurifiers';
 
-export type PriceRangeKey = 'all' | 'under-300' | '300-600' | '600-900' | 'over-900';
+export const MIN_PRICE = 150;
+export const MAX_PRICE = 1100;
+const PRICE_STEP = 10;
+
 export type CoverageRangeKey = 'all' | 'up-to-35' | '36-55' | 'over-55';
 
 export interface FilterState {
   brands: Array<(typeof BRAND_OPTIONS)[number]>;
   purifierTypes: PurifierType[];
-  priceRange: PriceRangeKey;
+  priceMin: number;
+  priceMax: number;
   coverageRange: CoverageRangeKey;
   onSaleOnly: boolean;
   climateVoucherOnly: boolean;
@@ -26,14 +30,6 @@ interface FilterSidebarProps {
   isMobileOpen: boolean;
   onCloseMobile: () => void;
 }
-
-const PRICE_OPTIONS: Array<{ key: PriceRangeKey; label: string }> = [
-  { key: 'all', label: 'All Prices' },
-  { key: 'under-300', label: 'Under S$300' },
-  { key: '300-600', label: 'S$300 – S$600' },
-  { key: '600-900', label: 'S$600 – S$900' },
-  { key: 'over-900', label: 'S$900 & Above' },
-];
 
 const COVERAGE_OPTIONS: Array<{ key: CoverageRangeKey; label: string }> = [
   { key: 'all', label: 'All Room Sizes' },
@@ -49,14 +45,19 @@ export function FilterSidebar({
   isMobileOpen,
   onCloseMobile,
 }: FilterSidebarProps) {
+  const isPriceFiltered = filters.priceMin > MIN_PRICE || filters.priceMax < MAX_PRICE;
+
   const activeCount =
     filters.brands.length +
     filters.purifierTypes.length +
-    (filters.priceRange !== 'all' ? 1 : 0) +
+    (isPriceFiltered ? 1 : 0) +
     (filters.coverageRange !== 'all' ? 1 : 0) +
     (filters.onSaleOnly ? 1 : 0) +
     (filters.climateVoucherOnly ? 1 : 0) +
     (filters.inStockOnly ? 1 : 0);
+
+  const minPercent = ((filters.priceMin - MIN_PRICE) / (MAX_PRICE - MIN_PRICE)) * 100;
+  const maxPercent = ((filters.priceMax - MIN_PRICE) / (MAX_PRICE - MIN_PRICE)) * 100;
 
   const toggleBrand = (brand: (typeof BRAND_OPTIONS)[number]) => {
     const exists = filters.brands.includes(brand);
@@ -157,27 +158,83 @@ export function FilterSidebar({
         </div>
       </div>
 
-      {/* Price Range */}
+      {/* Price Range Slider */}
       <div className="pt-5 border-t border-slate-200">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
-          Price (SGD)
-        </h3>
-        <div className="space-y-2">
-          {PRICE_OPTIONS.map((opt) => (
-            <label
-              key={opt.key}
-              className="flex items-center gap-2.5 text-sm text-slate-700 cursor-pointer select-none"
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            Price (SGD)
+          </h3>
+          {isPriceFiltered && (
+            <button
+              type="button"
+              onClick={() => onChange({ ...filters, priceMin: MIN_PRICE, priceMax: MAX_PRICE })}
+              className="text-[11px] font-semibold text-[#00338D] hover:underline cursor-pointer"
             >
-              <input
-                type="radio"
-                name="price-range"
-                checked={filters.priceRange === opt.key}
-                onChange={() => onChange({ ...filters, priceRange: opt.key })}
-                className="w-4 h-4 border-slate-300 text-[#00338D] focus:ring-[#00338D]"
-              />
-              <span>{opt.label}</span>
-            </label>
-          ))}
+              Reset
+            </button>
+          )}
+        </div>
+
+        {/* Min / Max Readouts */}
+        <div className="grid grid-cols-2 gap-2.5 mb-4">
+          <div className="border border-slate-200 rounded px-2.5 py-1.5 bg-[#F8FAFC]">
+            <span className="block text-[10px] uppercase tracking-wider text-slate-400">Min</span>
+            <span className="text-sm font-bold text-slate-900 tabular-nums">
+              S${filters.priceMin.toLocaleString()}
+            </span>
+          </div>
+          <div className="border border-slate-200 rounded px-2.5 py-1.5 bg-[#F8FAFC]">
+            <span className="block text-[10px] uppercase tracking-wider text-slate-400">Max</span>
+            <span className="text-sm font-bold text-slate-900 tabular-nums">
+              S${filters.priceMax.toLocaleString()}
+            </span>
+          </div>
+        </div>
+
+        {/* Dual-Thumb Slider Bar */}
+        <div className="relative h-6 flex items-center">
+          <div className="w-full h-1.5 bg-slate-200 rounded-full relative">
+            <div
+              className="absolute h-1.5 bg-[#00338D] rounded-full"
+              style={{
+                left: `${minPercent}%`,
+                width: `${Math.max(0, maxPercent - minPercent)}%`,
+              }}
+            />
+          </div>
+
+          <input
+            type="range"
+            min={MIN_PRICE}
+            max={MAX_PRICE}
+            step={PRICE_STEP}
+            value={filters.priceMin}
+            aria-label="Minimum price in SGD"
+            onChange={(e) => {
+              const nextMin = Math.min(Number(e.target.value), filters.priceMax - 50);
+              onChange({ ...filters, priceMin: nextMin });
+            }}
+            className="price-range-input absolute inset-x-0 w-full h-6 m-0 z-10"
+          />
+
+          <input
+            type="range"
+            min={MIN_PRICE}
+            max={MAX_PRICE}
+            step={PRICE_STEP}
+            value={filters.priceMax}
+            aria-label="Maximum price in SGD"
+            onChange={(e) => {
+              const nextMax = Math.max(Number(e.target.value), filters.priceMin + 50);
+              onChange({ ...filters, priceMax: nextMax });
+            }}
+            className="price-range-input absolute inset-x-0 w-full h-6 m-0 z-20"
+          />
+        </div>
+
+        <div className="flex justify-between text-[11px] text-slate-400 tabular-nums mt-1">
+          <span>S${MIN_PRICE}</span>
+          <span>S${MAX_PRICE.toLocaleString()}</span>
         </div>
       </div>
 

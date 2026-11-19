@@ -41,3 +41,43 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Dual-thumb price range slider */
+.price-range-input {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  pointer-events: none;
+}
+
+.price-range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  pointer-events: auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #00338d;
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.35);
+  cursor: pointer;
+  transition: transform 0.12s ease, background-color 0.12s ease;
+}
+
+.price-range-input::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  background: #002569;
+}
+
+.price-range-input::-moz-range-thumb {
+  pointer-events: auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #00338d;
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.35);
+  cursor: pointer;
+  transition: transform 0.12s ease, background-color 0.12s ease;
+}
+
