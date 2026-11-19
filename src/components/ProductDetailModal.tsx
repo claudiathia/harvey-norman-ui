@@ -243,7 +243,7 @@ export function ProductDetailModal({
               }}
               className="w-full mt-2.5 bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 text-sm font-bold px-5 py-3 rounded-md transition-colors cursor-pointer"
             >
-              One-Click Checkout · S${(product.price * quantity).toLocaleString()}
+              BUY NOW · S${(product.price * quantity).toLocaleString()}
             </button>
 
             <div className="flex items-center gap-2 text-xs text-slate-500 mt-3">

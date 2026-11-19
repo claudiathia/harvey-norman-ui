@@ -160,13 +160,13 @@ export function ProductCard({
             </button>
           </div>
 
-          {/* One-Click Checkout Button */}
+          {/* BUY NOW Button */}
           <button
             type="button"
             onClick={() => onOneClickCheckout(product)}
             className="w-full mt-2 bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 text-xs font-bold px-3.5 py-2.5 rounded-md transition-colors whitespace-nowrap cursor-pointer"
           >
-            One-Click Checkout
+            BUY NOW
           </button>
         </div>
       </div>
