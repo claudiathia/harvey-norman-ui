@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useEffect, useState, FormEvent } from 'react';
 import { CheckCircle2, Minus, Plus, ShoppingBag, Store, Trash2, Truck, X } from 'lucide-react';
 import { AirPurifierProduct, StoreLocation } from '../data/airPurifiers';
 import { ProductImage } from './ProductImage';
@@ -10,6 +10,7 @@ export interface CartItem {
 
 interface CartDrawerProps {
   isOpen: boolean;
+  startInCheckout?: boolean;
   items: CartItem[];
   selectedStore: StoreLocation;
   onClose: () => void;
@@ -21,6 +22,7 @@ interface CartDrawerProps {
 
 export function CartDrawer({
   isOpen,
+  startInCheckout = false,
   items,
   selectedStore,
   onClose,
@@ -33,13 +35,20 @@ export function CartDrawer({
   const [promoInput, setPromoInput] = useState('');
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoError, setPromoError] = useState('');
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [isCheckingOut, setIsCheckingOut] = useState(startInCheckout);
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
   const [postalCode, setPostalCode] = useState('');
   const [confirmedOrderId, setConfirmedOrderId] = useState<string | null>(null);
   const [confirmedTotal, setConfirmedTotal] = useState<number>(0);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsCheckingOut(startInCheckout);
+      setConfirmedOrderId(null);
+    }
+  }, [isOpen, startInCheckout]);
 
   if (!isOpen) return null;
 

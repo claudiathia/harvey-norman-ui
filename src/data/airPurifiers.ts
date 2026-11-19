@@ -23,6 +23,7 @@ export interface AirPurifierProduct {
   rating: number;
   reviewCount: number;
   inStock: boolean;
+  stockLeft: number;
   clickAndCollect: boolean;
   climateVoucherEligible: boolean;
   promoLabel?: string;
@@ -111,6 +112,7 @@ export const AIR_PURIFIER_PRODUCTS: AirPurifierProduct[] = [
     rating: 4.9,
     reviewCount: 148,
     inStock: true,
+    stockLeft: 5,
     clickAndCollect: true,
     climateVoucherEligible: false,
     promoLabel: 'Save S$410',
@@ -142,6 +144,7 @@ export const AIR_PURIFIER_PRODUCTS: AirPurifierProduct[] = [
     rating: 4.8,
     reviewCount: 214,
     inStock: true,
+    stockLeft: 3,
     clickAndCollect: true,
     climateVoucherEligible: false,
     promoLabel: 'Save S$90',
@@ -173,6 +176,7 @@ export const AIR_PURIFIER_PRODUCTS: AirPurifierProduct[] = [
     rating: 4.7,
     reviewCount: 92,
     inStock: true,
+    stockLeft: 7,
     clickAndCollect: true,
     climateVoucherEligible: true,
     promoLabel: 'Save S$70',
@@ -204,6 +208,7 @@ export const AIR_PURIFIER_PRODUCTS: AirPurifierProduct[] = [
     rating: 4.7,
     reviewCount: 176,
     inStock: true,
+    stockLeft: 5,
     clickAndCollect: true,
     climateVoucherEligible: false,
     promoLabel: 'Save S$211',
@@ -235,6 +240,7 @@ export const AIR_PURIFIER_PRODUCTS: AirPurifierProduct[] = [
     rating: 4.9,
     reviewCount: 41,
     inStock: true,
+    stockLeft: 2,
     clickAndCollect: true,
     climateVoucherEligible: false,
     promoLabel: 'Save S$200',
@@ -266,6 +272,7 @@ export const AIR_PURIFIER_PRODUCTS: AirPurifierProduct[] = [
     rating: 4.8,
     reviewCount: 64,
     inStock: true,
+    stockLeft: 4,
     clickAndCollect: true,
     climateVoucherEligible: false,
     promoLabel: 'Save S$136',
@@ -297,6 +304,7 @@ export const AIR_PURIFIER_PRODUCTS: AirPurifierProduct[] = [
     rating: 4.6,
     reviewCount: 231,
     inStock: true,
+    stockLeft: 9,
     clickAndCollect: true,
     climateVoucherEligible: false,
     promoLabel: 'Save S$148',
@@ -328,6 +336,7 @@ export const AIR_PURIFIER_PRODUCTS: AirPurifierProduct[] = [
     rating: 4.6,
     reviewCount: 53,
     inStock: true,
+    stockLeft: 5,
     clickAndCollect: true,
     climateVoucherEligible: true,
     promoLabel: 'Save S$150',
@@ -359,6 +368,7 @@ export const AIR_PURIFIER_PRODUCTS: AirPurifierProduct[] = [
     rating: 4.5,
     reviewCount: 38,
     inStock: false,
+    stockLeft: 2,
     clickAndCollect: true,
     climateVoucherEligible: false,
     promoLabel: 'Save S$150',

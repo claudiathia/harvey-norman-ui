@@ -6,7 +6,7 @@ import {
   SINGAPORE_STORES,
   StoreLocation,
 } from './data/airPurifiers';
-import { Header } from './components/Header';
+import { Header, NavCategoryAction } from './components/Header';
 import { StorefrontToolbar } from './components/StorefrontToolbar';
 import { CategoryHero } from './components/CategoryHero';
 import { FilterSidebar, FilterState } from './components/FilterSidebar';
@@ -42,6 +42,7 @@ export default function App() {
 
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [startInCheckout, setStartInCheckout] = useState(false);
   const [recentlyAddedId, setRecentlyAddedId] = useState<string | null>(null);
 
   const [compareIds, setCompareIds] = useState<string[]>([]);
@@ -149,12 +150,45 @@ export default function App() {
     setSortBy('featured');
   };
 
+  const handleOneClickCheckout = (product: AirPurifierProduct, qty = 1) => {
+    setCart((prev) => {
+      const existing = prev.find((i) => i.product.id === product.id);
+      if (existing) {
+        return prev;
+      }
+      return [...prev, { product, quantity: qty }];
+    });
+    setStartInCheckout(true);
+    setIsCartOpen(true);
+  };
+
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleNavCategoryAction = (action: NavCategoryAction) => {
+    if (action.openStores) {
+      setIsStoreFinderOpen(true);
+      return;
+    }
+    if (action.resetAll) {
+      setFilters(INITIAL_FILTERS);
+      setSearchQuery('');
+    } else if (action.type || action.promoOnly || action.climateOnly) {
+      setFilters({
+        ...INITIAL_FILTERS,
+        purifierTypes: action.type ? [action.type] : [],
+        onSaleOnly: Boolean(action.promoOnly),
+        climateVoucherOnly: Boolean(action.climateOnly),
+      });
+    }
+    if (action.sectionId) {
+      scrollToSection(action.sectionId);
     }
   };
 
@@ -173,9 +207,11 @@ export default function App() {
       <Header
         cartCount={cartCount}
         cartSubtotal={cartSubtotal}
-        onOpenCart={() => setIsCartOpen(true)}
-        onOpenStoreFinder={() => setIsStoreFinderOpen(true)}
-        onSelectCategoryNav={scrollToSection}
+        onOpenCart={() => {
+          setStartInCheckout(false);
+          setIsCartOpen(true);
+        }}
+        onSelectCategoryAction={handleNavCategoryAction}
       />
 
       <StorefrontToolbar
@@ -356,6 +392,7 @@ export default function App() {
                       justAdded={recentlyAddedId === product.id}
                       onToggleCompare={handleToggleCompare}
                       onAddToCart={(p) => handleAddToCart(p, 1)}
+                      onOneClickCheckout={(p) => handleOneClickCheckout(p, 1)}
                       onOpenQuickView={setQuickViewProduct}
                     />
                   ))}
@@ -398,14 +435,19 @@ export default function App() {
         selectedStore={selectedStore}
         onClose={() => setQuickViewProduct(null)}
         onAddToCart={handleAddToCart}
+        onOneClickCheckout={handleOneClickCheckout}
         onOpenStoreFinder={() => setIsStoreFinderOpen(true)}
       />
 
       <CartDrawer
         isOpen={isCartOpen}
+        startInCheckout={startInCheckout}
         items={cart}
         selectedStore={selectedStore}
-        onClose={() => setIsCartOpen(false)}
+        onClose={() => {
+          setIsCartOpen(false);
+          setStartInCheckout(false);
+        }}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveCartItem}
         onClearCart={() => setCart([])}

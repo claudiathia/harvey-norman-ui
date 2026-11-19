@@ -8,6 +8,7 @@ interface ProductCardProps {
   justAdded: boolean;
   onToggleCompare: (product: AirPurifierProduct) => void;
   onAddToCart: (product: AirPurifierProduct) => void;
+  onOneClickCheckout: (product: AirPurifierProduct) => void;
   onOpenQuickView: (product: AirPurifierProduct) => void;
 }
 
@@ -17,6 +18,7 @@ export function ProductCard({
   justAdded,
   onToggleCompare,
   onAddToCart,
+  onOneClickCheckout,
   onOpenQuickView,
 }: ProductCardProps) {
   const monthlyInstalment = (product.price / 12).toFixed(2);
@@ -90,12 +92,12 @@ export function ProductCard({
           <span>{product.purifierType}</span>
         </div>
 
-        {/* Fulfilment & Climate Voucher subtle text line */}
+        {/* Fulfilment & Stock Quantity line */}
         <div className="text-xs text-slate-600 mb-4 space-y-0.5">
-          <p className={product.inStock ? 'text-emerald-700 font-medium' : 'text-amber-700 font-medium'}>
+          <p className={product.inStock ? 'text-amber-700 font-semibold' : 'text-[#B91C1C] font-semibold'}>
             {product.inStock
-              ? 'In Stock Online · 2-Hr Click & Collect'
-              : 'Store Pickup Only · Check Outlet Stock'}
+              ? `Only ${product.stockLeft} left online · 2-Hr Click & Collect`
+              : `Only ${product.stockLeft} left in outlets · Store Pickup Only`}
           </p>
           {product.climateVoucherEligible && (
             <p className="text-[#00338D] font-medium">NEA Climate Voucher Eligible</p>
@@ -157,6 +159,15 @@ export function ProductCard({
               <span>{isCompared ? 'Added' : 'Compare'}</span>
             </button>
           </div>
+
+          {/* One-Click Checkout Button */}
+          <button
+            type="button"
+            onClick={() => onOneClickCheckout(product)}
+            className="w-full mt-2 bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 text-xs font-bold px-3.5 py-2.5 rounded-md transition-colors whitespace-nowrap cursor-pointer"
+          >
+            One-Click Checkout
+          </button>
         </div>
       </div>
     </article>

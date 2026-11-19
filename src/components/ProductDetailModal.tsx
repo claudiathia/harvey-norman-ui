@@ -8,6 +8,7 @@ interface ProductDetailModalProps {
   selectedStore: StoreLocation;
   onClose: () => void;
   onAddToCart: (product: AirPurifierProduct, quantity: number) => void;
+  onOneClickCheckout: (product: AirPurifierProduct, quantity: number) => void;
   onOpenStoreFinder: () => void;
 }
 
@@ -16,6 +17,7 @@ export function ProductDetailModal({
   selectedStore,
   onClose,
   onAddToCart,
+  onOneClickCheckout,
   onOpenStoreFinder,
 }: ProductDetailModalProps) {
   const [quantity, setQuantity] = useState(1);
@@ -159,7 +161,11 @@ export function ProductDetailModal({
                   <p className="font-semibold text-slate-900">
                     {product.price >= 300 ? 'Free Islandwide Delivery' : 'Standard Delivery (S$12)'}
                   </p>
-                  <p className="text-slate-500">Estimated arrival in 2–4 working days</p>
+                  <p className="text-amber-700 font-semibold tabular-nums">
+                    {product.inStock
+                      ? `Only ${product.stockLeft} left online · Arrives in 2–4 working days`
+                      : `Only ${product.stockLeft} left in outlets · Store Pickup Only`}
+                  </p>
                 </div>
               </div>
               <div className="p-3 flex items-start justify-between gap-2.5">
@@ -228,6 +234,17 @@ export function ProductDetailModal({
                 )}
               </button>
             </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                onOneClickCheckout(product, quantity);
+              }}
+              className="w-full mt-2.5 bg-[#FACC15] hover:bg-[#EAB308] text-slate-950 text-sm font-bold px-5 py-3 rounded-md transition-colors cursor-pointer"
+            >
+              One-Click Checkout · S${(product.price * quantity).toLocaleString()}
+            </button>
 
             <div className="flex items-center gap-2 text-xs text-slate-500 mt-3">
               <ShieldCheck className="w-4 h-4 text-slate-400" />
