@@ -1,0 +1,6 @@
+{
+  "name": "Harvey Norman Singapore — Air Purifiers",
+  "description": "Shop HEPA air purifiers, 2-in-1 purifier fans, and humidifying air purifiers from Dyson, Electrolux, Novita, LG, and Sharp at Harvey Norman Singapore.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
