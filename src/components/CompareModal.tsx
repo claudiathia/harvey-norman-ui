@@ -63,19 +63,25 @@ export function CompareModal({
         </div>
 
         <div className="overflow-auto p-6">
-          <table className="w-full border-collapse text-left min-w-[640px]">
+          <table className="w-full table-fixed border-collapse text-left min-w-[640px]">
+            <colgroup>
+              <col className="w-44" />
+              {items.map((item) => (
+                <col key={item.id} />
+              ))}
+            </colgroup>
             <thead>
               <tr>
-                <th className="w-44 p-3 align-top text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
+                <th className="p-3 align-top text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
                   Model
                 </th>
                 {items.map((item) => (
                   <th key={item.id} className="p-3 align-top border-b border-slate-200">
-                    <div className="relative bg-[#F8FAFC] rounded-md p-3 mb-3 aspect-[4/3] flex items-center justify-center">
+                    <div className="relative bg-[#F8FAFC] border border-slate-100 rounded-md p-4 mb-3 h-44 w-full flex items-center justify-center">
                       <ProductImage
                         src={item.image}
                         alt={item.name}
-                        className="max-h-32 w-auto object-contain"
+                        className="w-36 h-36 object-contain"
                       />
                       <button
                         type="button"
@@ -87,7 +93,7 @@ export function CompareModal({
                       </button>
                     </div>
                     <p className="text-xs font-semibold text-[#00338D] uppercase">{item.brand}</p>
-                    <p className="font-display text-sm font-bold text-slate-900 line-clamp-2 mt-0.5 mb-2">
+                    <p className="font-display text-sm font-bold text-slate-900 line-clamp-2 min-h-[2.5rem] mt-0.5 mb-2">
                       {item.name}
                     </p>
                     <div className="flex items-baseline gap-2 mb-3">
